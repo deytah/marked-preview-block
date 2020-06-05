@@ -15,6 +15,8 @@
         "typescript": "^3.9.3"
     },
     "scripts": {
-        "lint": "eslint --ext .js,.jsx,.ts,.tsx frontend"
+        "lint": "eslint --ext .js,.jsx,.ts,.tsx frontend",
+        "dev": "block run --default-port 9010",
+        "deploy": "block release"
     }
 }
