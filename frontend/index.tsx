@@ -1,9 +1,61 @@
-import {initializeBlock} from '@airtable/blocks/ui';
-import React from 'react';
+import {cursor} from "@airtable/blocks";
+import {Box, initializeBlock, useBase, useLoadable, useSettingsButton, useWatchable} from '@airtable/blocks/ui';
+import React, {useEffect, useState} from 'react';
+import RecordPreview from "./RecordPreview";
+import {useSettings} from './settings';
+import SettingsForm from './SettingsForm';
 
-function HelloWorldTypescriptBlock() {
-    // YOUR CODE GOES HERE
-    return <div>Hello world 🚀</div>;
+function MarkedPreviewBlock() {
+    const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+    useSettingsButton(() => setIsSettingsOpen(!isSettingsOpen));
+
+    const [selectedRecordId, setSelectedRecordId] = useState('');
+    const [selectedFieldId, setSelectedFieldId] = useState('');
+
+    const {isValid} = useSettings();
+
+    useLoadable(cursor);
+    useWatchable(cursor, ['activeTableId', 'activeViewId', 'selectedRecordIds', 'selectedFieldIds'], () => {
+        if (cursor.selectedRecordIds.length > 0) {
+            setSelectedRecordId(cursor.selectedRecordIds[0]);
+        }
+        if (cursor.selectedFieldIds.length > 0) {
+            setSelectedFieldId(cursor.selectedFieldIds[0]);
+        }
+    });
+
+    useWatchable(cursor, ['activeTableId', 'activeViewId'], () => {
+        setSelectedRecordId(null);
+        setSelectedFieldId(null);
+    });
+
+    const base = useBase();
+
+    const activeTable = base.getTableById(cursor.activeTableId);
+
+    useEffect(() => {
+        // Display the settings form if the settings aren't valid.
+        if (!isValid && !isSettingsOpen) {
+            setIsSettingsOpen(true);
+        }
+    }, [isValid, isSettingsOpen]);
+
+    // activeTable is briefly null when switching to a newly created table.
+    if (!activeTable) {
+        return null;
+    }
+
+    return (
+        <Box>
+            {isSettingsOpen ? (
+                <SettingsForm setIsSettingsOpen={setIsSettingsOpen}/>
+            ) : (
+                <RecordPreview activeTable={activeTable}
+                               selectedRecordId={selectedRecordId}
+                               selectedFieldId={selectedFieldId}/>
+            )}
+        </Box>
+    );
 }
 
-initializeBlock(() => <HelloWorldTypescriptBlock />);
+initializeBlock(() => <MarkedPreviewBlock/>);
