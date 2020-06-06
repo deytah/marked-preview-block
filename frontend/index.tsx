@@ -1,7 +1,7 @@
 import {cursor} from "@airtable/blocks";
 import {Box, initializeBlock, useBase, useLoadable, useSettingsButton, useWatchable} from '@airtable/blocks/ui';
 import React, {useEffect, useState} from 'react';
-import RecordPreview from "./RecordPreview";
+import MarkedPreview from "./MarkedPreview";
 import {useSettings} from './settings';
 import SettingsForm from './SettingsForm';
 
@@ -50,7 +50,7 @@ function MarkedPreviewBlock() {
             {isSettingsOpen ? (
                 <SettingsForm setIsSettingsOpen={setIsSettingsOpen}/>
             ) : (
-                <RecordPreview activeTable={activeTable}
+                <MarkedPreview activeTable={activeTable}
                                selectedRecordId={selectedRecordId}
                                selectedFieldId={selectedFieldId}/>
             )}
