@@ -16,7 +16,7 @@ import {
 import {useSettings, ConfigKeys, allowedUrlFieldTypes} from './settings';
 import {cursor} from "@airtable/blocks";
 
-function SettingsForm({setIsSettingsOpen}) {
+export default function SettingsForm({setIsSettingsOpen}) {
     const base = useBase();
     const globalConfig = useGlobalConfig();
     useWatchable(cursor, ['activeTableId']);
@@ -98,5 +98,3 @@ function SettingsForm({setIsSettingsOpen}) {
 SettingsForm.propTypes = {
     setIsSettingsOpen: PropTypes.func.isRequired,
 };
-
-export default SettingsForm;
