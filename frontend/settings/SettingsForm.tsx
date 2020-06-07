@@ -15,6 +15,7 @@ import {
 
 import {useSettings, ConfigKeys, allowedUrlFieldTypes} from './settings';
 import {cursor} from "@airtable/blocks";
+import FormatSelect from "./FormatSelect";
 
 export default function SettingsForm({setIsSettingsOpen}) {
     const base = useBase();
@@ -38,7 +39,7 @@ export default function SettingsForm({setIsSettingsOpen}) {
             display="flex"
             flexDirection="column"
         >
-            <Box flex="auto" padding={4} paddingBottom={2}>
+            <Box flex="auto" padding={4} paddingBottom={2} style={{overflowY: 'auto'}}>
                 <Heading marginBottom={3}>Settings</Heading>
                 <FormField label="">
                     <SwitchSynced
@@ -63,12 +64,13 @@ export default function SettingsForm({setIsSettingsOpen}) {
                                 allowedTypes={allowedUrlFieldTypes}
                                 shouldAllowPickingNone={true}
                             />
+                            <Text paddingY={1} textColor="light">
+                                {markedField
+                                    ? 'The block will show previews for the specified field. Choose none to preview any valid selected cell.'
+                                    : 'The block will show previews of the selected cell in grid view.'}
+                            </Text>
                         </FormField>
-                        <Text paddingY={1} textColor="light">
-                            {markedField
-                                ? 'The block will show previews for the specified field. Choose none to preview any valid selected cell.'
-                                : 'The block will show previews of the selected cell in grid view.'}
-                        </Text>
+                        <FormatSelect activeTable={activeTable}/>
                     </div>
                 )}
             </Box>
