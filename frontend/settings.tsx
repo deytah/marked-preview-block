@@ -7,6 +7,8 @@ export const ConfigKeys = {
     IS_ENFORCED: 'isEnforced',
     TABLE_BLOCKED: 'tableBlockedTableId',
     MARKED_FIELD_ID: 'urlFieldId',
+    CONTENT_TYPE_LOCKED: 'contentType',
+    INCLUDE_MARKDOWN: 'includeMarkdown',
 };
 
 export const allowedUrlFieldTypes = [
@@ -26,10 +28,12 @@ function getSettings(globalConfig: GlobalConfig, base: Base, activeTableId: stri
     const markedFieldId = globalConfig.get([ConfigKeys.MARKED_FIELD_ID, activeTableId]) || '';
     const tableBlocked = !!globalConfig.get([ConfigKeys.TABLE_BLOCKED, activeTableId]);
     const markedField = !tableBlocked ? base.getTableById(activeTableId).getFieldByIdIfExists(markedFieldId.toString()) : null;
+    const includeMarkdown = !!globalConfig.get([ConfigKeys.INCLUDE_MARKDOWN, activeTableId]);
     return {
         isEnforced,
         tableBlocked,
         markedField,
+        includeMarkdown,
     };
 }
 
@@ -80,7 +84,8 @@ export function useSettings(): SettingsValidationInterface {
             settings: {
                 isEnforced: false,
                 tableBlocked: false,
-                markedField: null
+                markedField: null,
+                includeMarkdown: false,
             }
         }
     }
@@ -93,7 +98,8 @@ export function useSettings(): SettingsValidationInterface {
 export interface SettingsInterface {
     isEnforced: boolean,
     tableBlocked: boolean,
-    markedField: Field
+    markedField: Field,
+    includeMarkdown: boolean,
 }
 
 export interface SettingsValidationInterface {

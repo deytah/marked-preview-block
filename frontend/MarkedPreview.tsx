@@ -3,6 +3,7 @@ import {Box, Text} from "@airtable/blocks/ui";
 import React from "react";
 import RecordPreview from "./RecordPreview";
 import {allowedUrlFieldTypes, useSettings} from "./settings";
+import MarkdownSwitchSynced from "./MarkdownSwitchSynced";
 
 export default function MarkedPreview(props: { activeTable: Table, selectedRecordId: string, selectedFieldId: string }) {
     const {activeTable, selectedRecordId, selectedFieldId} = props;
@@ -30,13 +31,14 @@ export default function MarkedPreview(props: { activeTable: Table, selectedRecor
 
     return (
         <Box display="flex" flexDirection="column" style={{height: '100vh', maxHeight: '100vh'}}>
-            <Box padding={2} borderBottom="thick">
+            {!errorMessage && <Box display="flex" justifyContent="space-between" padding={2} borderBottom="thick">
                 <Text>Field: {selectedField?.name}</Text>
-            </Box>
-            <Box padding={2} style={{overflowY: 'auto'}} flexGrow={1} display="flex">
-                {!errorMessage ? <RecordPreview table={activeTable} recordId={selectedRecordId} field={field}/> :
-                    <ErrorBox message={errorMessage}/>}
-            </Box>
+                <MarkdownSwitchSynced activeTable={activeTable}/>
+            </Box>}
+            {!errorMessage && <Box padding={2} style={{overflowY: 'auto'}} flexGrow={1} display="flex">
+                <RecordPreview table={activeTable} recordId={selectedRecordId} field={field}/>
+            </Box>}
+            {errorMessage && <ErrorBox message={errorMessage}/>}
         </Box>
     )
 }
