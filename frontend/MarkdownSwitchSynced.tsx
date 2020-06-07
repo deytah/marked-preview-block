@@ -1,7 +1,7 @@
 import {Table} from "@airtable/blocks/models";
 import {SwitchSynced, useGlobalConfig} from "@airtable/blocks/ui";
 import React from "react";
-import {ConfigKeys} from "./settings";
+import {ConfigKeys} from "./settings/settings";
 
 export default function MarkdownSwitchSynced(props: { activeTable: Table }) {
     const {activeTable} = props;

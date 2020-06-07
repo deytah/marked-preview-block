@@ -2,7 +2,7 @@ import {Table} from "@airtable/blocks/models";
 import {Box, Text} from "@airtable/blocks/ui";
 import React from "react";
 import RecordPreview from "./RecordPreview";
-import {allowedUrlFieldTypes, useSettings} from "./settings";
+import {allowedUrlFieldTypes, useSettings} from "./settings/settings";
 import MarkdownSwitchSynced from "./MarkdownSwitchSynced";
 
 export default function MarkedPreview(props: { activeTable: Table, selectedRecordId: string, selectedFieldId: string }) {

@@ -6,7 +6,7 @@ import sanitizeHtml from 'sanitize-html';
 import remark from "remark";
 import remarkHtml from "remark-html";
 import {ErrorBox} from "./MarkedPreview";
-import {useSettings} from "./settings";
+import {useSettings} from "./settings/settings";
 
 export default function RecordPreview(props: { table: Table, recordId: string, field: Field }) {
     const {table, recordId, field} = props;

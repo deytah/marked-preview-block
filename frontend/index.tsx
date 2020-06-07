@@ -2,8 +2,8 @@ import {cursor} from "@airtable/blocks";
 import {Box, initializeBlock, useBase, useLoadable, useSettingsButton, useWatchable} from '@airtable/blocks/ui';
 import React, {useEffect, useState} from 'react';
 import MarkedPreview from "./MarkedPreview";
-import {useSettings} from './settings';
-import SettingsForm from './SettingsForm';
+import {useSettings} from './settings/settings';
+import SettingsForm from './settings/SettingsForm';
 
 function MarkedPreviewBlock() {
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
