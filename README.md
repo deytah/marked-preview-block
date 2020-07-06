@@ -9,7 +9,7 @@ The previewer currently supports content from the following column types:
 - Rich Text
 
 As well as the following elements:
-- Headings (H1-H6
+- Headings (H1-H6)
 - Bold
 - Italic
 - Hyperlinks
