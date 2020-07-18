@@ -16,10 +16,10 @@ export default function MarkdownSwitchSynced(props: { activeTable: Table }) {
 
     return (
         <SwitchSynced
-            aria-label={`When enabled, the block will render markdown for the active table, ${activeTable.name}.`}
+            aria-label={`When enabled, the block will parse markdown for the active table, ${activeTable.name}.`}
             backgroundColor="transparent"
             globalConfigKey={[ConfigKeys.INCLUDE_MARKDOWN, activeTableId]}
-            label="Use markdown"
+            label="Parse markdown"
             onChange={value => value &&
                 globalConfig.setAsync([ConfigKeys.MARKED_FIELD_ID, activeTableId], null).then()}
             style={{height: "16px"}}

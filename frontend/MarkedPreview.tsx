@@ -32,7 +32,7 @@ export default function MarkedPreview(props: { activeTable: Table, selectedRecor
     return (
         <Box display="flex" flexDirection="column" style={{height: '100vh', maxHeight: '100vh'}}>
             {!errorMessage && <Box display="flex" justifyContent="space-between" padding={2} borderBottom="thick">
-                <Text>Field: {selectedField?.name}</Text>
+                <Text>Previewing: {selectedField?.name}</Text>
                 <MarkdownSwitchSynced activeTable={activeTable}/>
             </Box>}
             {!errorMessage && <Box padding={2} style={{overflowY: 'auto'}} flexGrow={1} display="flex">
