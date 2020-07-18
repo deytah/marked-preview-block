@@ -43,16 +43,17 @@ export default function SettingsForm({setIsSettingsOpen}) {
                 <Heading marginBottom={3}>Settings</Heading>
                 <FormField label="">
                     <SwitchSynced
-                        aria-label={`When enabled, the block will not show previews for the active table, ${activeTable.name}.`}
+                        aria-label={`When disabled, the block will not show previews for the active table, ${activeTable.name}.`}
                         onChange={value => value &&
                             globalConfig.setAsync([ConfigKeys.MARKED_FIELD_ID, activeTableId], null).then()}
-                        label="Block previews for this table"
+                        label={`Disable previews for: ${activeTable.name}`}
                         globalConfigKey={[ConfigKeys.TABLE_BLOCKED, activeTableId]}
+                        variant="danger"
                     />
                     <Text paddingY={1} textColor="light">
                         {tableBlocked
-                            ? 'The block will not show previews for this table.'
-                            : 'The block will show previews of the selected cell in grid view.'}
+                            ? `The block will not show previews for ${activeTable.name} table.`
+                            : `The block will show previews for ${activeTable.name} table.`}
                     </Text>
                 </FormField>
                 {!tableBlocked && (

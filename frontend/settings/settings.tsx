@@ -12,8 +12,11 @@ export const ConfigKeys = {
 };
 
 export const allowedUrlFieldTypes = [
+    FieldType.FORMULA,
+    FieldType.MULTIPLE_LOOKUP_VALUES,
     FieldType.MULTILINE_TEXT,
     FieldType.RICH_TEXT,
+    FieldType.SINGLE_LINE_TEXT,
 ];
 
 /**
