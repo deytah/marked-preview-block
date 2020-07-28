@@ -39,8 +39,8 @@ export default function SettingsForm({setIsSettingsOpen}) {
             display="flex"
             flexDirection="column"
         >
-            <Box flex="auto" padding={4} paddingBottom={2} style={{overflowY: 'auto'}}>
-                <Heading marginBottom={3}>Settings</Heading>
+            <Box flex="auto" padding={3} paddingBottom={2} style={{overflowY: 'auto'}}>
+                <Heading marginBottom={2}>Settings</Heading>
                 <FormField label="">
                     <SwitchSynced
                         aria-label={`When disabled, the block will not show previews for the active table, ${activeTable.name}.`}
