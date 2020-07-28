@@ -32,11 +32,15 @@ export default function MarkedPreview(props: { activeTable: Table, selectedRecor
     return (
         <Box display="flex" flexDirection="column" style={{height: '100vh', maxHeight: '100vh'}}>
             {!errorMessage && <Box display="flex" justifyContent="space-between" padding={2} borderBottom="thick">
-                <Text>Previewing: {selectedField?.name}</Text>
-                <MarkdownSwitchSynced activeTable={activeTable}/>
+              <Text style={{
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+              }}>Field: <strong>{selectedField?.name}</strong></Text>
+              <MarkdownSwitchSynced activeTable={activeTable}/>
             </Box>}
             {!errorMessage && <Box padding={2} style={{overflowY: 'auto'}} flexGrow={1} display="flex">
-                <RecordPreview table={activeTable} recordId={selectedRecordId} field={field}/>
+              <RecordPreview table={activeTable} recordId={selectedRecordId} field={field}/>
             </Box>}
             {errorMessage && <ErrorBox message={errorMessage}/>}
         </Box>
