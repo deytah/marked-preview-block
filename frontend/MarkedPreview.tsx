@@ -3,7 +3,7 @@ import {Box, Text} from "@airtable/blocks/ui";
 import React from "react";
 import RecordPreview from "./RecordPreview";
 import {allowedUrlFieldTypes, useSettings} from "./settings/settings";
-import MarkdownSwitchSynced from "./MarkdownSwitchSynced";
+import MarkdownSelectButtonsSynced from "./MarkdownSelectButtonsSynced";
 
 export default function MarkedPreview(props: { activeTable: Table, selectedRecordId: string, selectedFieldId: string }) {
     const {activeTable, selectedRecordId, selectedFieldId} = props;
@@ -31,13 +31,14 @@ export default function MarkedPreview(props: { activeTable: Table, selectedRecor
 
     return (
         <Box display="flex" flexDirection="column" style={{height: '100vh', maxHeight: '100vh'}}>
-            {!errorMessage && <Box display="flex" justifyContent="space-between" padding={2} borderBottom="thick">
+            {!errorMessage &&
+            <Box display="flex" justifyContent="space-between" padding={2} borderBottom="thick" alignItems="center">
               <Text style={{
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
                   whiteSpace: 'nowrap',
               }}>Field: <strong>{selectedField?.name}</strong></Text>
-              <MarkdownSwitchSynced activeTable={activeTable}/>
+              <MarkdownSelectButtonsSynced activeTable={activeTable}/>
             </Box>}
             {!errorMessage && <Box padding={2} style={{overflowY: 'auto'}} flexGrow={1} display="flex">
               <RecordPreview table={activeTable} recordId={selectedRecordId} field={field}/>
