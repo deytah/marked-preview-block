@@ -33,6 +33,9 @@ function MarkedPreviewBlock() {
 
     const activeTable = base.getTableById(cursor.activeTableId);
 
+    if (!isValid && !isSettingsOpen) {
+        setIsSettingsOpen(true)
+    }
     useEffect(() => {
         // Display the settings form if the settings aren't valid.
         if (!isValid && !isSettingsOpen) {

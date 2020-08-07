@@ -1,14 +1,12 @@
-import {useBase, useGlobalConfig, useWatchable} from '@airtable/blocks/ui';
-import {Base, Field, FieldType} from '@airtable/blocks/models';
+import {useBase, useGlobalConfig} from '@airtable/blocks/ui';
+import {Base, Field, FieldType, Table} from '@airtable/blocks/models';
 import GlobalConfig from "@airtable/blocks/dist/types/src/global_config";
-import {cursor} from "@airtable/blocks";
 
 export const ConfigKeys = {
     IS_ENFORCED: 'isEnforced',
-    TABLE_BLOCKED: 'tableBlockedTableId',
-    MARKED_FIELD_ID: 'urlFieldId',
-    CONTENT_TYPE_LOCKED: 'contentType',
     INCLUDE_MARKDOWN: 'includeMarkdown',
+    LOCKED_TABLE_ID: 'urlTableId',
+    LOCKED_FIELD_ID: 'urlFieldId',
 };
 
 export const allowedUrlFieldTypes = [
@@ -23,20 +21,24 @@ export const allowedUrlFieldTypes = [
  * Return settings from GlobalConfig with defaults, and converts them to Airtable objects.
  * @param {GlobalConfig} globalConfig
  * @param {Base} base - The base being used by the block in order to convert id's to objects
- * @param {string} activeTableId
  * @returns {SettingsInterface}
  */
-function getSettings(globalConfig: GlobalConfig, base: Base, activeTableId: string): SettingsInterface {
+function getSettings(globalConfig: GlobalConfig, base: Base): SettingsInterface {
+    if (typeof globalConfig.get(ConfigKeys.INCLUDE_MARKDOWN) !== "boolean") {
+        globalConfig.setAsync(ConfigKeys.INCLUDE_MARKDOWN, true).then()
+    }
     const isEnforced = Boolean(globalConfig.get(ConfigKeys.IS_ENFORCED));
-    const markedFieldId = globalConfig.get([ConfigKeys.MARKED_FIELD_ID, activeTableId]) || '';
-    const tableBlocked = !!globalConfig.get([ConfigKeys.TABLE_BLOCKED, activeTableId]);
-    const markedField = !tableBlocked ? base.getTableById(activeTableId).getFieldByIdIfExists(markedFieldId.toString()) : null;
-    const includeMarkdown = !!globalConfig.get([ConfigKeys.INCLUDE_MARKDOWN, activeTableId]);
+    const lockedFieldId = globalConfig.get(ConfigKeys.LOCKED_FIELD_ID)?.toString();
+    const lockedTableId = globalConfig.get(ConfigKeys.LOCKED_TABLE_ID)?.toString();
+    const includeMarkdown = Boolean(globalConfig.get(ConfigKeys.INCLUDE_MARKDOWN))
+
+    const lockedTable = base.getTableByIdIfExists(lockedTableId);
+    const lockedField = lockedTable ? lockedTable.getFieldByIdIfExists(lockedFieldId) : null;
     return {
         isEnforced,
-        tableBlocked,
-        markedField,
         includeMarkdown,
+        lockedField,
+        lockedTable,
     };
 }
 
@@ -46,16 +48,20 @@ function getSettings(globalConfig: GlobalConfig, base: Base, activeTableId: stri
  * @returns {SettingsValidationInterface}
  */
 function getSettingsValidationResult(settings: SettingsInterface): { settings: SettingsInterface, isValid: boolean, message: string | null } {
-    const {isEnforced, tableBlocked, markedField} = settings;
+    const {isEnforced, lockedTable, lockedField} = settings;
     let isValid = true;
     let message = null;
     // If the enforcement switch is set to "Yes"...
-    if (isEnforced && !tableBlocked) {
-        if (!markedField) {
+    if (isEnforced) {
+        if (!lockedTable) {
+            // If table has not yet been selected...
+            isValid = false;
+            message = 'Please select a table for previews';
+        } else if (!lockedField) {
             // If a table has been selected, but no field...
             isValid = false;
             message = 'Please select a field for previews';
-        } else if (!allowedUrlFieldTypes.includes(markedField.type)) {
+        } else if (!allowedUrlFieldTypes.includes(lockedField.type)) {
             isValid = false;
             message = 'Please select a supported field for previews';
         }
@@ -75,34 +81,16 @@ function getSettingsValidationResult(settings: SettingsInterface): { settings: S
 export function useSettings(): SettingsValidationInterface {
     const base = useBase();
     const globalConfig = useGlobalConfig();
-
-    useWatchable(cursor, ['activeTableId']);
-    const activeTableId = cursor.activeTableId;
-
-    // If we're in that weird in between state, just return safe settings
-    if (!activeTableId) {
-        return {
-            isValid: true,
-            message: '',
-            settings: {
-                isEnforced: false,
-                tableBlocked: false,
-                markedField: null,
-                includeMarkdown: false,
-            }
-        }
-    }
-
-    const settings = getSettings(globalConfig, base, activeTableId);
-
+    console.log('globalConfig', globalConfig);
+    const settings = getSettings(globalConfig, base);
     return getSettingsValidationResult(settings);
 }
 
 export interface SettingsInterface {
     isEnforced: boolean,
-    tableBlocked: boolean,
-    markedField: Field,
     includeMarkdown: boolean,
+    lockedField: Field,
+    lockedTable: Table,
 }
 
 export interface SettingsValidationInterface {

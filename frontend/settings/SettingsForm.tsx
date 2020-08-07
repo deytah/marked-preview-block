@@ -7,26 +7,19 @@ import {
     FieldPickerSynced,
     FormField,
     Heading,
-    SwitchSynced,
+    Switch,
+    TablePickerSynced,
     Text,
-    useWatchable,
-    useBase,
 } from '@airtable/blocks/ui';
 
 import {useSettings, ConfigKeys, allowedUrlFieldTypes} from './settings';
-import {cursor} from "@airtable/blocks";
-import FormatSelect from "./FormatSelect";
 
-export default function SettingsForm({setIsSettingsOpen}) {
-    const base = useBase();
+function SettingsForm({setIsSettingsOpen}) {
     const globalConfig = useGlobalConfig();
-    useWatchable(cursor, ['activeTableId']);
-    const activeTableId = cursor.activeTableId;
-    const activeTable = base.getTableByIdIfExists(activeTableId);
     const {
         isValid,
         message,
-        settings: {tableBlocked, markedField},
+        settings: {isEnforced, lockedTable},
     } = useSettings();
 
     return (
@@ -39,40 +32,36 @@ export default function SettingsForm({setIsSettingsOpen}) {
             display="flex"
             flexDirection="column"
         >
-            <Box flex="auto" padding={3} paddingBottom={2} style={{overflowY: 'auto'}}>
-                <Heading marginBottom={2}>Settings</Heading>
+            <Box flex="auto" padding={4} paddingBottom={2}>
+                <Heading marginBottom={3}>Settings</Heading>
                 <FormField label="">
-                    <SwitchSynced
-                        aria-label={`When disabled, the block will not show previews for the active table, ${activeTable.name}.`}
-                        onChange={value => value &&
-                            globalConfig.setAsync([ConfigKeys.MARKED_FIELD_ID, activeTableId], null).then()}
-                        label={`Disable previews for: ${activeTable.name}`}
-                        globalConfigKey={[ConfigKeys.TABLE_BLOCKED, activeTableId]}
-                        variant="danger"
+                    <Switch
+                        aria-label="When enabled, the block will only show previews for the specified table and field, regardless of what field is selected."
+                        value={isEnforced}
+                        onChange={value => {
+                            globalConfig.setAsync(ConfigKeys.IS_ENFORCED, value);
+                        }}
+                        label="Use a specific field for previews"
                     />
                     <Text paddingY={1} textColor="light">
-                        {tableBlocked
-                            ? `The block will not show previews for ${activeTable.name} table.`
-                            : `The block will show previews for ${activeTable.name} table.`}
+                        {isEnforced
+                            ? 'The block will show previews for the selected record in grid view if the table has a supported URL in the specified field.'
+                            : 'The block will show previews if the selected cell in grid view has a supported URL.'}
                     </Text>
                 </FormField>
-                {!tableBlocked && (
-                    <div>
-                        <FormField label="Preview field">
-                            <FieldPickerSynced
-                                table={activeTable}
-                                globalConfigKey={[ConfigKeys.MARKED_FIELD_ID, activeTableId]}
-                                allowedTypes={allowedUrlFieldTypes}
-                                shouldAllowPickingNone={true}
-                            />
-                            <Text paddingY={1} textColor="light">
-                                {markedField
-                                    ? 'The block will show previews for the specified field. Choose none to preview any valid selected cell.'
-                                    : 'The block will show previews of the selected cell in grid view.'}
-                            </Text>
-                        </FormField>
-                        <FormatSelect activeTable={activeTable}/>
-                    </div>
+                {isEnforced && (
+                    <FormField label="Preview table">
+                        <TablePickerSynced globalConfigKey={ConfigKeys.LOCKED_TABLE_ID} />
+                    </FormField>
+                )}
+                {isEnforced && lockedTable && (
+                    <FormField label="Preview field">
+                        <FieldPickerSynced
+                            table={lockedTable}
+                            globalConfigKey={ConfigKeys.LOCKED_FIELD_ID}
+                            allowedTypes={allowedUrlFieldTypes}
+                        />
+                    </FormField>
                 )}
             </Box>
             <Box display="flex" flex="none" padding={3} borderTop="thick">
@@ -101,3 +90,5 @@ export default function SettingsForm({setIsSettingsOpen}) {
 SettingsForm.propTypes = {
     setIsSettingsOpen: PropTypes.func.isRequired,
 };
+
+export default SettingsForm;
