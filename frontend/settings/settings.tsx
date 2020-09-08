@@ -81,7 +81,6 @@ function getSettingsValidationResult(settings: SettingsInterface): { settings: S
 export function useSettings(): SettingsValidationInterface {
     const base = useBase();
     const globalConfig = useGlobalConfig();
-    console.log('globalConfig', globalConfig);
     const settings = getSettings(globalConfig, base);
     return getSettingsValidationResult(settings);
 }
